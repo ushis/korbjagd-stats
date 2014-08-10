@@ -146,12 +146,7 @@ angular.module('korbjagdStats')
     Map.prototype.zoom = function(sector) {
       var points = this.sectorCorners(sector);
 
-      var translateMap = [
-        0.5 * this.width(),
-        0.5 * this.height()
-      ].join(',');
-
-      var translateSector = [
+      var translate = [
         -0.5 * (points[2][0] + points[0][0]),
         -0.5 * (points[0][1] + points[2][1])
       ].join(',');
@@ -161,11 +156,13 @@ angular.module('korbjagdStats')
         this.height() / (points[0][1] - points[2][1])
       );
 
-      this.features.attr('transform',
-                         'translate(' + translateMap + ')' +
-                         'scale(' + scale + ')' +
-                         'translate(' + translateSector  + ')');
+      var transform = [
+        'translate(', this.projection.translate(), ')',
+        'scale(', scale, ')',
+        'translate(', translate, ')'
+      ].join('');
 
+      this.features.attr('transform', transform);
       return this;
     };
 

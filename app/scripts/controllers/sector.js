@@ -10,8 +10,8 @@ angular.module('korbjagdStats')
     $scope.baskets = baskets.baskets;
 
     /* Initialize the map and zoom into the sector */
-    $scope.sMap = new Map('#sector-map', $scope.world, [$scope.sector], $scope.baskets);
-    $scope.sMap.draw().zoom($scope.sector);
+    $scope.map = new Map('#sector-map', $scope.world, [$scope.sector], $scope.baskets);
+    $scope.map.draw().zoom($scope.sector);
 
     /* Formats a point */
     $scope.formatPoint = function(p, digits) {
