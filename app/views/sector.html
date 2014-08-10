@@ -1,0 +1,33 @@
+<div class="overlay">
+  <div class="header">
+    <h1>
+      Sector #<span ng-bind="sector.id"></span>
+      <a ui-sref="map" class="close"></a>
+    </h1>
+  </div>
+
+  <div class="details-container">
+    <div id="sector-map"></div>
+
+    <div class="details">
+      <table>
+        <tr>
+          <td>Baskets</td>
+          <td ng-bind="sector.baskets_count"></td>
+        </tr>
+        <tr>
+          <td>South West</td>
+          <td ng-bind="formatPoint(sector.south_west, 1)"></td>
+        </tr>
+        <tr>
+          <td>North East</td>
+          <td ng-bind="formatPoint(sector.north_east, 1)"></td>
+        </tr>
+        <tr>
+          <td>Last Update</td>
+          <td ng-bind="sector.updated_at | date : 'dd-MM-yyyy HH:mm'">
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
