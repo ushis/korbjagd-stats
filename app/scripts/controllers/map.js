@@ -3,8 +3,8 @@
 angular.module('korbjagdStats')
   .controller('MapCtrl', function (_, $scope, $state, $window, Map, sectors, world) {
 
-    /* List of all sectors */
-    $scope.sectors = sectors.sectors;
+    /* List of all "populated" sectors */
+    $scope.sectors = _.filter(sectors.sectors, 'baskets_count');
 
     /* Topo data of the world */
     $scope.world = world.data;

@@ -51,8 +51,8 @@ angular.module('korbjagdStats')
 
     /* Sets the sectors and calculates the scores, based on baskets_count */
     Map.prototype.setSectors = function(sectors) {
-      this.sectors = _.filter(sectors, 'baskets_count');
-      var max = _.max(this.sectors, 'baskets_count').baskets_count;
+      this.sectors = sectors;
+      var max = _.max(sectors, 'baskets_count').baskets_count;
 
       this.sectors.forEach(function(sector) {
         sector.score = Math.log(sector.baskets_count) / Math.log(max);
