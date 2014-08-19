@@ -6,7 +6,7 @@ angular.module('korbjagdStats')
     /* Constructs a new map */
     var Map = function(selector, world, sectors, baskets) {
       this.el = d3.select(selector);
-      this.world = world;
+      this.world = topojson.feature(world, world.objects.land);
       this.events = {};
       this.setSectors(sectors);
       this.baskets = baskets || [];
@@ -59,6 +59,23 @@ angular.module('korbjagdStats')
       });
     };
 
+    /* Returns the bounds of all sectors */
+    Map.prototype.bounds = function() {
+      var swPoints = _.pluck(this.sectors, 'south_west');
+      var nePoints = _.pluck(this.sectors, 'north_east');
+
+      return {
+        south_west: {
+          latitude: _.min(_.pluck(swPoints, 'latitude')),
+          longitude: _.min(_.pluck(swPoints, 'longitude'))
+        },
+        north_east: {
+          latitude: _.max(_.pluck(nePoints, 'latitude')),
+          longitude: _.max(_.pluck(nePoints, 'longitude'))
+        }
+      };
+    };
+
     /* Returns the corner points of a sector */
     Map.prototype.sectorCorners = function(sector) {
       var points = [
@@ -91,23 +108,25 @@ angular.module('korbjagdStats')
       this.clip = this.svg.append('defs').append('clipPath');
       this.clip.attr('id', this.uid('clip'));
 
+      this.features = this.svg.append('g');
+      this.features.attr('clip-path', 'url(#' + this.clip.attr('id') + ')');
+
       this.projection = d3.geo.mercator();
       this.projection.translate([this.width() / 2, this.height() / 2]);
+
+      this.path = d3.geo.path().projection(this.projection);
     };
 
     /* Draws the world */
     Map.prototype.drawWorld = function() {
       var map = this.clip.append('path');
-      map.datum(topojson.feature(this.world, this.world.objects.land));
-      map.attr('d', d3.geo.path().projection(this.projection));
+      map.datum(this.world);
+      map.attr('d', this.path);
       map.attr('fill', '#ffffff');
     };
 
     /* Draws the sectors */
     Map.prototype.drawSectors = function() {
-      this.features = this.svg.append('g');
-      this.features.attr('clip-path', 'url(#' + this.clip.attr('id') + ')');
-
       this.sectors.forEach(function(sector) {
         var me = this;
         var points = this.sectorCorners(sector);
@@ -144,7 +163,7 @@ angular.module('korbjagdStats')
 
     /* Zooms into a specified sector */
     Map.prototype.zoom = function(sector) {
-      var points = this.sectorCorners(sector);
+      var points = this.sectorCorners((sector) ? sector : this.bounds());
 
       var translate = [
         -0.5 * (points[2][0] + points[0][0]),

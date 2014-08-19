@@ -10,7 +10,7 @@ angular.module('korbjagdStats')
     $scope.world = world.data;
 
     /* Initialize the map */
-    $scope.map = new Map('#map', $scope.world, $scope.sectors).draw();
+    $scope.map = new Map('#map', $scope.world, $scope.sectors).draw().zoom();
 
     /* Go to sector on click */
     $scope.map.on('click', function(sector) {
@@ -19,6 +19,6 @@ angular.module('korbjagdStats')
 
     /* Resize the map on window resize */
     $window.addEventListener('resize', _.debounce(function() {
-      $scope.map.draw();
+      $scope.map.draw().zoom();
     }, 200));
   });
